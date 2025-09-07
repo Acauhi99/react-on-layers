@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { SignupForm } from "./SignupForm";
+import { toast } from "sonner";
 
 const signupSchema = z
   .object({
@@ -42,14 +43,29 @@ export function SignupFormContainer({
     confirmPassword: "",
     acceptedTerms: false,
   });
+  const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
+  const [fieldErrors, setFieldErrors] = useState<{ [k: string]: string }>({});
   const [localError, setLocalError] = useState<string | null>(null);
+
+  function validateField(name: string, value: string | boolean) {
+    const partial = { ...form, [name]: value };
+    const result = signupSchema.safeParse(partial);
+    if (!result.success) {
+      const issue = result.error.issues.find((i) => i.path[0] === name);
+      setFieldErrors((prev) => ({ ...prev, [name]: issue?.message || "" }));
+    } else {
+      setFieldErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value, type, checked } = e.target;
+    const fieldValue = type === "checkbox" ? checked : value;
     setForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: fieldValue,
     }));
+    if (touched[name]) validateField(name, fieldValue);
   }
 
   function handleCheckedChange(checked: boolean) {
@@ -57,6 +73,13 @@ export function SignupFormContainer({
       ...prev,
       acceptedTerms: checked,
     }));
+    if (touched["acceptedTerms"]) validateField("acceptedTerms", checked);
+  }
+
+  function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
+    const { name, value, type, checked } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    validateField(name, type === "checkbox" ? checked : value);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -66,6 +89,21 @@ export function SignupFormContainer({
     if (!result.success) {
       const firstError = result.error.issues[0];
       setLocalError(firstError?.message || "Dados inválidos");
+      toast.error(firstError?.message || "Dados inválidos");
+      setTouched({
+        name: true,
+        birthdate: true,
+        email: true,
+        password: true,
+        confirmPassword: true,
+        acceptedTerms: true,
+      });
+      result.error.issues.forEach((issue) => {
+        setFieldErrors((prev) => ({
+          ...prev,
+          [issue.path[0] as string]: issue.message,
+        }));
+      });
       return;
     }
     onSubmit({
@@ -74,6 +112,7 @@ export function SignupFormContainer({
       name: form.name,
       birthdate: form.birthdate,
     });
+    toast.success("Cadastro realizado com sucesso!");
   }
 
   return (
@@ -81,6 +120,8 @@ export function SignupFormContainer({
       values={form}
       onChange={handleChange}
       onCheckedChange={handleCheckedChange}
+      onBlur={handleBlur}
+      fieldErrors={fieldErrors}
       onSubmit={handleSubmit}
       loading={loading}
       error={error || localError}

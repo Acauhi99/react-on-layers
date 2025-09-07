@@ -74,7 +74,7 @@ export function AuthPage() {
                 Não tem conta?{" "}
                 <button
                   type="button"
-                  className="text-primary underline"
+                  className="text-sm text-muted-foreground underline hover:text-primary cursor-pointer"
                   onClick={() => {
                     setMode("signup");
                     setError(null);
@@ -88,7 +88,7 @@ export function AuthPage() {
                 Já tem conta?{" "}
                 <button
                   type="button"
-                  className="text-primary underline"
+                  className="text-sm text-muted-foreground underline hover:text-primary cursor-pointer"
                   onClick={() => {
                     setMode("login");
                     setError(null);
