@@ -50,6 +50,7 @@ export function SignupFormContainer({
   function validateField(name: string, value: string | boolean) {
     const partial = { ...form, [name]: value };
     const result = signupSchema.safeParse(partial);
+
     if (!result.success) {
       const issue = result.error.issues.find((i) => i.path[0] === name);
       setFieldErrors((prev) => ({ ...prev, [name]: issue?.message || "" }));
@@ -61,11 +62,15 @@ export function SignupFormContainer({
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value, type, checked } = e.target;
     const fieldValue = type === "checkbox" ? checked : value;
+
     setForm((prev) => ({
       ...prev,
       [name]: fieldValue,
     }));
-    if (touched[name]) validateField(name, fieldValue);
+
+    if (touched[name]) {
+      validateField(name, fieldValue);
+    }
   }
 
   function handleCheckedChange(checked: boolean) {
@@ -73,11 +78,15 @@ export function SignupFormContainer({
       ...prev,
       acceptedTerms: checked,
     }));
-    if (touched["acceptedTerms"]) validateField("acceptedTerms", checked);
+
+    if (touched["acceptedTerms"]) {
+      validateField("acceptedTerms", checked);
+    }
   }
 
   function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
     const { name, value, type, checked } = e.target;
+
     setTouched((prev) => ({ ...prev, [name]: true }));
     validateField(name, type === "checkbox" ? checked : value);
   }
@@ -85,11 +94,16 @@ export function SignupFormContainer({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLocalError(null);
+
     const result = signupSchema.safeParse(form);
+
     if (!result.success) {
-      const firstError = result.error.issues[0];
-      setLocalError(firstError?.message || "Dados inválidos");
-      toast.error(firstError?.message || "Dados inválidos");
+      const issues = result.error.issues;
+      const firstErrorMsg = issues[0]?.message || "Dados inválidos";
+
+      setLocalError(firstErrorMsg);
+      toast.error(firstErrorMsg);
+
       setTouched({
         name: true,
         birthdate: true,
@@ -98,20 +112,26 @@ export function SignupFormContainer({
         confirmPassword: true,
         acceptedTerms: true,
       });
-      result.error.issues.forEach((issue) => {
-        setFieldErrors((prev) => ({
-          ...prev,
-          [issue.path[0] as string]: issue.message,
-        }));
+
+      setFieldErrors((prev) => {
+        const newErrors = { ...prev };
+        issues.forEach((issue) => {
+          const field = issue.path[0] as string;
+          newErrors[field] = issue.message;
+        });
+        return newErrors;
       });
+
       return;
     }
+
     onSubmit({
       email: form.email,
       password: form.password,
       name: form.name,
       birthdate: form.birthdate,
     });
+
     toast.success("Cadastro realizado com sucesso!");
   }
 

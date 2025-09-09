@@ -17,6 +17,7 @@ export function useAuth(): AuthApi {
       }
       return { success: false, message: "Credenciais inválidas" };
     },
+
     async signup(email, password) {
       await new Promise((r) => setTimeout(r, 800));
       if (email && password.length >= 6) {

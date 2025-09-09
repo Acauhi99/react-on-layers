@@ -2,7 +2,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CardDescription } from "@/components/ui/card";
 import { User, Calendar, Mail, Lock, Loader2 } from "lucide-react";
 
 export interface SignupFormProps {
@@ -35,9 +34,6 @@ export function SignupForm({
 }: SignupFormProps) {
   return (
     <form className="grid gap-4" onSubmit={onSubmit} noValidate>
-      <CardDescription className="mb-2 text-muted-foreground">
-        Preencha os campos para criar sua conta.
-      </CardDescription>
       <div className="grid gap-2">
         <Label htmlFor="name">Nome</Label>
         <div className="relative">

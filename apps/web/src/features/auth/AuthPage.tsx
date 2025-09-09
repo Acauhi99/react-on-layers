@@ -23,6 +23,7 @@ export function AuthPage() {
     setError(null);
     const res = await auth.login(email, password);
     setLoading(false);
+
     if (res.success) {
       navigate({ to: "/" });
     } else {
@@ -41,6 +42,7 @@ export function AuthPage() {
     setError(null);
     const res = await auth.signup(email, password);
     setLoading(false);
+
     if (res.success) {
       navigate({ to: "/" });
     } else {

@@ -27,6 +27,7 @@ export function LoginFormContainer({
   function validateField(name: string, value: string) {
     const partial = { ...form, [name]: value };
     const result = loginSchema.safeParse(partial);
+
     if (!result.success) {
       const issue = result.error.issues.find((i) => i.path[0] === name);
       setFieldErrors((prev) => ({ ...prev, [name]: issue?.message || "" }));
@@ -37,15 +38,20 @@ export function LoginFormContainer({
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
+
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
-    if (touched[name]) validateField(name, value);
+
+    if (touched[name]) {
+      validateField(name, value);
+    }
   }
 
   function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
     const { name, value } = e.target;
+
     setTouched((prev) => ({ ...prev, [name]: true }));
     validateField(name, value);
   }
@@ -54,19 +60,27 @@ export function LoginFormContainer({
     e.preventDefault();
     setLocalError(null);
     const result = loginSchema.safeParse(form);
+
     if (!result.success) {
-      const firstError = result.error.issues[0];
-      setLocalError(firstError?.message || "Dados inválidos");
-      toast.error(firstError?.message || "Dados inválidos");
+      const issues = result.error.issues;
+      const firstErrorMsg = issues[0]?.message || "Dados inválidos";
+
+      setLocalError(firstErrorMsg);
+      toast.error(firstErrorMsg);
       setTouched({ email: true, password: true });
-      result.error.issues.forEach((issue) => {
-        setFieldErrors((prev) => ({
-          ...prev,
-          [issue.path[0] as string]: issue.message,
-        }));
+
+      setFieldErrors((prev) => {
+        const newErrors = { ...prev };
+        issues.forEach((issue) => {
+          const field = issue.path[0] as string;
+          newErrors[field] = issue.message;
+        });
+        return newErrors;
       });
+
       return;
     }
+
     onSubmit(form);
     toast.success("Login realizado com sucesso!");
   }
