@@ -4,6 +4,7 @@ import { LoginFormContainer } from "./login/LoginFormContainer";
 import { SignupFormContainer } from "./signup/SignupFormContainer";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useNavigate } from "@tanstack/react-router";
+import { useAuthStore } from "@/features/auth/useAuthStore";
 
 export function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup">("login");
@@ -25,6 +26,7 @@ export function AuthPage() {
     setLoading(false);
 
     if (res.success) {
+      useAuthStore.getState().login();
       navigate({ to: "/" });
     } else {
       setError(res.message);
