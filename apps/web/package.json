@@ -33,6 +33,7 @@
 	"devDependencies": {
 		"@tanstack/react-query-devtools": "^5.85.5",
 		"@tanstack/react-router-devtools": "^1.121.0-alpha.27",
+		"@tauri-apps/cli": "^2.8.4",
 		"@testing-library/dom": "^10.4.0",
 		"@testing-library/react": "^16.2.0",
 		"@types/react": "^19.0.12",
