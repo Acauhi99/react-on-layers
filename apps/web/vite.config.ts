@@ -11,9 +11,27 @@ export default defineConfig({
     tanstackStart({ customViteReactPlugin: true }),
     viteReact(),
   ],
-  base: "./",
+  base: "/",
   build: {
     outDir: "dist",
     target: ["es2022", "chrome112", "safari16"],
+    sourcemap: false,
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['@tanstack/react-router'],
+          ui: ['lucide-react', 'sonner'],
+        },
+      },
+    },
+  },
+  server: {
+    headers: {
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'X-XSS-Protection': '1; mode=block',
+    },
   },
 });

@@ -1,4 +1,9 @@
+import React from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { queryClient } from "@/lib/query-client";
+
 
 import {
   HeadContent,
@@ -42,18 +47,23 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
 function RootDocument() {
   const isFetching = useRouterState({ select: (s) => s.isLoading });
+
+
   return (
     <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
       <body>
-        <div className="grid h-svh grid-rows-[auto_1fr]">
-          <Header />
-          {isFetching ? <Loader /> : <Outlet />}
-        </div>
-        <Toaster richColors />
-        <TanStackRouterDevtools position="bottom-left" />
+        <QueryClientProvider client={queryClient}>
+          <div className="grid h-svh grid-rows-[auto_1fr]">
+            <Header />
+            {isFetching ? <Loader /> : <Outlet />}
+          </div>
+          <Toaster richColors />
+          <ReactQueryDevtools />
+          <TanStackRouterDevtools position="bottom-left" />
+        </QueryClientProvider>
         <Scripts />
       </body>
     </html>
