@@ -1,10 +1,11 @@
 import { Database } from "bun:sqlite";
+import { config } from "../../config/env.js";
 
 class DatabaseWrapper {
   private db: Database;
 
   constructor() {
-    this.db = new Database("financial.db");
+    this.db = new Database(config.database.path);
     this.init();
   }
 

@@ -1,3 +1,5 @@
+import { config } from '../../config/env.js'
+
 interface CacheItem<T> {
   data: T
   expiry: number
@@ -5,7 +7,7 @@ interface CacheItem<T> {
 
 export class MemoryCache {
   private cache = new Map<string, CacheItem<any>>()
-  private defaultTTL = 5 * 60 * 1000 // 5 minutes
+  private defaultTTL = config.cache.defaultTTL
 
   set<T>(key: string, data: T, ttl?: number): void {
     const expiry = Date.now() + (ttl || this.defaultTTL)

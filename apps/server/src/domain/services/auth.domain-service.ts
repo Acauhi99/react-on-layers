@@ -1,8 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Account } from "../entities/account.entity.js";
-
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+import { config } from "../../config/env.js";
 
 export class AuthDomainService {
   static async hashPassword(password: string): Promise<string> {
@@ -17,12 +16,12 @@ export class AuthDomainService {
   }
 
   static generateToken(accountId: string): string {
-    return jwt.sign({ accountId }, JWT_SECRET, { expiresIn: "7d" });
+    return jwt.sign({ accountId }, config.security.jwtSecret, { expiresIn: config.security.jwtExpiresIn });
   }
 
   static verifyToken(token: string): { accountId: string } {
     try {
-      return jwt.verify(token, JWT_SECRET) as { accountId: string };
+      return jwt.verify(token, config.security.jwtSecret) as { accountId: string };
     } catch (error) {
       throw new Error("Invalid token");
     }
