@@ -2,26 +2,9 @@ import {
   AccountRepository,
   type Account,
 } from "../repositories/account.repository.js";
-import { randomUUID } from "crypto";
 
 export class AccountService {
   private accountRepo = new AccountRepository();
-
-  async createAccount(email: string, name: string): Promise<Account> {
-    const existingAccount = this.accountRepo.findByEmail(email);
-    if (existingAccount) {
-      throw new Error("Account with this email already exists");
-    }
-
-    const account = {
-      id: randomUUID(),
-      email,
-      name,
-    };
-
-    this.accountRepo.create(account);
-    return this.accountRepo.findById(account.id)!;
-  }
 
   async getAccountByEmail(email: string): Promise<Account | null> {
     return this.accountRepo.findByEmail(email) || null;
@@ -33,7 +16,7 @@ export class AccountService {
 
   async updateAccount(
     id: string,
-    data: { email?: string; name?: string }
+    data: { email?: string; name?: string; password?: string }
   ): Promise<Account> {
     const account = this.accountRepo.findById(id);
     if (!account) {

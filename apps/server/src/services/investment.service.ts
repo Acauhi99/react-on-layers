@@ -5,7 +5,7 @@ import {
   type InvestmentWithType,
 } from "../repositories/investment.repository.js";
 import { AccountRepository } from "../repositories/account.repository.js";
-import { randomUUID } from "crypto";
+import { generateUUID } from "../utils/uuid.js";
 
 export class InvestmentService {
   private investmentRepo = new InvestmentRepository();
@@ -34,7 +34,7 @@ export class InvestmentService {
     }
 
     const investment = {
-      id: randomUUID(),
+      id: generateUUID(),
       account_id: accountId,
       name,
       investment_type_id: investmentTypeId,

@@ -4,6 +4,7 @@ export interface Account {
   id: string;
   email: string;
   name: string;
+  password: string;
   created_at: string;
   modified_at: string;
 }
@@ -12,10 +13,10 @@ export class AccountRepository {
   create(account: Omit<Account, "created_at" | "modified_at">): void {
     db.run(
       `
-      INSERT INTO accounts (id, email, name)
-      VALUES (?, ?, ?)
+      INSERT INTO accounts (id, email, name, password)
+      VALUES (?, ?, ?, ?)
     `,
-      [account.id, account.email, account.name]
+      [account.id, account.email, account.name, account.password]
     );
   }
 
@@ -37,7 +38,10 @@ export class AccountRepository {
     );
   }
 
-  update(id: string, data: Partial<Pick<Account, "email" | "name">>): void {
+  update(
+    id: string,
+    data: Partial<Pick<Account, "email" | "name" | "password">>
+  ): void {
     const fields = Object.keys(data)
       .map((key) => `${key} = ?`)
       .join(", ");

@@ -5,7 +5,7 @@ import {
 } from "../repositories/transaction.repository.js";
 import { CategoryRepository } from "../repositories/category.repository.js";
 import { AccountRepository } from "../repositories/account.repository.js";
-import { randomUUID } from "crypto";
+import { generateUUID } from "../utils/uuid.js";
 
 export class TransactionService {
   private transactionRepo = new TransactionRepository();
@@ -30,7 +30,7 @@ export class TransactionService {
     }
 
     const transaction = {
-      id: randomUUID(),
+      id: generateUUID(),
       account_id: accountId,
       amount,
       description,

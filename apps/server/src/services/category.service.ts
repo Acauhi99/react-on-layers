@@ -3,7 +3,7 @@ import {
   type Category,
 } from "../repositories/category.repository.js";
 import { AccountRepository } from "../repositories/account.repository.js";
-import { randomUUID } from "crypto";
+import { generateUUID } from "../utils/uuid.js";
 
 export class CategoryService {
   private categoryRepo = new CategoryRepository();
@@ -21,7 +21,7 @@ export class CategoryService {
     }
 
     const category = {
-      id: randomUUID(),
+      id: generateUUID(),
       account_id: accountId,
       name,
       type,

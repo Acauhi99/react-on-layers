@@ -1,21 +1,30 @@
 import { FastifyInstance } from "fastify";
 import {
   AccountController,
+  AuthController,
   CategoryController,
   TransactionController,
   InvestmentController,
   ReportController,
 } from "../controllers/index.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
 
 export async function apiRoutes(fastify: FastifyInstance) {
   const accountController = new AccountController();
+  const authController = new AuthController();
   const categoryController = new CategoryController();
   const transactionController = new TransactionController();
   const investmentController = new InvestmentController();
   const reportController = new ReportController();
 
+  // Auth routes (public)
+  fastify.post("/auth/register", authController.register.bind(authController));
+  fastify.post("/auth/login", authController.login.bind(authController));
+
+  // Protected routes
+  fastify.addHook("preHandler", authMiddleware);
+
   // Account routes
-  fastify.post("/accounts", accountController.create.bind(accountController));
   fastify.get(
     "/accounts/email/:email",
     accountController.getByEmail.bind(accountController)
