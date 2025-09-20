@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { CreateCategoryUseCase } from "../../application/use-cases/create-category.use-case.js";
 import { GetCategoriesUseCase } from "../../application/use-cases/get-categories.use-case.js";
-import { CategoryRepositoryImpl } from "../../infrastructure/repositories/category.repository.impl.js";
+import { CachedCategoryRepository } from "../../infrastructure/repositories/cached-category.repository.js";
 import { AccountRepositoryImpl } from "../../infrastructure/repositories/account.repository.impl.js";
 import { z } from "zod";
 
@@ -12,7 +12,7 @@ const createCategorySchema = z.object({
 });
 
 export class CategoryController {
-  private categoryRepository = new CategoryRepositoryImpl();
+  private categoryRepository = new CachedCategoryRepository();
   private accountRepository = new AccountRepositoryImpl();
 
   async create(request: FastifyRequest, reply: FastifyReply) {

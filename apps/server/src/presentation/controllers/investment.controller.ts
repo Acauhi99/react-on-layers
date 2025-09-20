@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { CreateInvestmentUseCase } from "../../application/use-cases/create-investment.use-case.js";
-import { InvestmentRepositoryImpl } from "../../infrastructure/repositories/investment.repository.impl.js";
+import { CachedInvestmentRepository } from "../../infrastructure/repositories/cached-investment.repository.js";
 import { AccountRepositoryImpl } from "../../infrastructure/repositories/account.repository.impl.js";
 import { z } from "zod";
 
@@ -12,7 +12,7 @@ const createInvestmentSchema = z.object({
 });
 
 export class InvestmentController {
-  private investmentRepository = new InvestmentRepositoryImpl();
+  private investmentRepository = new CachedInvestmentRepository();
   private accountRepository = new AccountRepositoryImpl();
 
   async create(request: FastifyRequest, reply: FastifyReply) {

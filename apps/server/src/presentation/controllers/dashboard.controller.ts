@@ -1,13 +1,13 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { GetDashboardUseCase } from "../../application/use-cases/get-dashboard.use-case.js";
-import { TransactionRepositoryImpl } from "../../infrastructure/repositories/transaction.repository.impl.js";
-import { InvestmentRepositoryImpl } from "../../infrastructure/repositories/investment.repository.impl.js";
-import { CategoryRepositoryImpl } from "../../infrastructure/repositories/category.repository.impl.js";
+import { CachedTransactionRepository } from "../../infrastructure/repositories/cached-transaction.repository.js";
+import { CachedInvestmentRepository } from "../../infrastructure/repositories/cached-investment.repository.js";
+import { CachedCategoryRepository } from "../../infrastructure/repositories/cached-category.repository.js";
 
 export class DashboardController {
-  private transactionRepository = new TransactionRepositoryImpl();
-  private investmentRepository = new InvestmentRepositoryImpl();
-  private categoryRepository = new CategoryRepositoryImpl();
+  private transactionRepository = new CachedTransactionRepository();
+  private investmentRepository = new CachedInvestmentRepository();
+  private categoryRepository = new CachedCategoryRepository();
 
   async getDashboard(request: FastifyRequest, reply: FastifyReply) {
     try {

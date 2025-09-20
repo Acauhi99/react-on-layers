@@ -3,9 +3,9 @@ import { CreateTransactionUseCase } from "../../application/use-cases/create-tra
 import { GetTransactionsUseCase } from "../../application/use-cases/get-transactions.use-case.js";
 import { UpdateTransactionUseCase } from "../../application/use-cases/update-transaction.use-case.js";
 import { DeleteTransactionUseCase } from "../../application/use-cases/delete-transaction.use-case.js";
-import { TransactionRepositoryImpl } from "../../infrastructure/repositories/transaction.repository.impl.js";
+import { CachedTransactionRepository } from "../../infrastructure/repositories/cached-transaction.repository.js";
 import { AccountRepositoryImpl } from "../../infrastructure/repositories/account.repository.impl.js";
-import { CategoryRepositoryImpl } from "../../infrastructure/repositories/category.repository.impl.js";
+import { CachedCategoryRepository } from "../../infrastructure/repositories/cached-category.repository.js";
 import { z } from "zod";
 
 const createTransactionSchema = z.object({
@@ -26,9 +26,9 @@ const updateTransactionSchema = z.object({
 });
 
 export class TransactionController {
-  private transactionRepository = new TransactionRepositoryImpl();
+  private transactionRepository = new CachedTransactionRepository();
   private accountRepository = new AccountRepositoryImpl();
-  private categoryRepository = new CategoryRepositoryImpl();
+  private categoryRepository = new CachedCategoryRepository();
 
   async create(request: FastifyRequest, reply: FastifyReply) {
     try {

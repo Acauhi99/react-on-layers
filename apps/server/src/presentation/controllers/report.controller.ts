@@ -1,13 +1,13 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { GenerateMonthlyReportUseCase } from "../../application/use-cases/generate-monthly-report.use-case.js";
-import { MonthlyBalanceRepositoryImpl } from "../../infrastructure/repositories/monthly-balance.repository.impl.js";
-import { TransactionRepositoryImpl } from "../../infrastructure/repositories/transaction.repository.impl.js";
-import { InvestmentRepositoryImpl } from "../../infrastructure/repositories/investment.repository.impl.js";
+import { CachedMonthlyBalanceRepository } from "../../infrastructure/repositories/cached-monthly-balance.repository.js";
+import { CachedTransactionRepository } from "../../infrastructure/repositories/cached-transaction.repository.js";
+import { CachedInvestmentRepository } from "../../infrastructure/repositories/cached-investment.repository.js";
 
 export class ReportController {
-  private monthlyBalanceRepository = new MonthlyBalanceRepositoryImpl();
-  private transactionRepository = new TransactionRepositoryImpl();
-  private investmentRepository = new InvestmentRepositoryImpl();
+  private monthlyBalanceRepository = new CachedMonthlyBalanceRepository();
+  private transactionRepository = new CachedTransactionRepository();
+  private investmentRepository = new CachedInvestmentRepository();
 
   async getMonthlyReport(request: FastifyRequest, reply: FastifyReply) {
     try {
