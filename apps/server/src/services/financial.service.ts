@@ -4,7 +4,7 @@ import type { Transaction, Category } from '@/types'
 export class FinancialService {
   // Categories
   createCategory(data: Omit<Category, 'id'>): Category {
-    const id = Date.now().toString() + Math.random().toString(36).substr(2, 9)
+    const id = Date.now().toString() + Math.random().toString(36).slice(2, 11)
     const category = { id, ...data }
     
     db.run(
@@ -21,7 +21,7 @@ export class FinancialService {
 
   // Transactions
   createTransaction(data: Omit<Transaction, 'id' | 'createdAt'>): Transaction {
-    const id = Date.now().toString() + Math.random().toString(36).substr(2, 9)
+    const id = Date.now().toString() + Math.random().toString(36).slice(2, 11)
     const createdAt = new Date().toISOString()
     const transaction = { id, createdAt, ...data }
     
