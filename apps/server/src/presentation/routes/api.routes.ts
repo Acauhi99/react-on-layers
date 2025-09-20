@@ -3,6 +3,8 @@ import { AuthController } from "../controllers/auth.controller.js";
 import { TransactionController } from "../controllers/transaction.controller.js";
 import { CategoryController } from "../controllers/category.controller.js";
 import { InvestmentController } from "../controllers/investment.controller.js";
+import { ReportController } from "../controllers/report.controller.js";
+import { DashboardController } from "../controllers/dashboard.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 
 export async function apiRoutes(fastify: FastifyInstance) {
@@ -10,6 +12,8 @@ export async function apiRoutes(fastify: FastifyInstance) {
   const transactionController = new TransactionController();
   const categoryController = new CategoryController();
   const investmentController = new InvestmentController();
+  const reportController = new ReportController();
+  const dashboardController = new DashboardController();
 
   // Auth routes (public)
   fastify.post("/auth/register", authController.register.bind(authController));
@@ -37,6 +41,18 @@ export async function apiRoutes(fastify: FastifyInstance) {
     "/accounts/:accountId/transactions",
     transactionController.getByAccount.bind(transactionController)
   );
+  fastify.get(
+    "/transactions/:id",
+    transactionController.getById.bind(transactionController)
+  );
+  fastify.put(
+    "/transactions/:id",
+    transactionController.update.bind(transactionController)
+  );
+  fastify.delete(
+    "/transactions/:id",
+    transactionController.delete.bind(transactionController)
+  );
 
   // Investment routes
   fastify.post(
@@ -50,5 +66,25 @@ export async function apiRoutes(fastify: FastifyInstance) {
   fastify.get(
     "/accounts/:accountId/investments/summary",
     investmentController.getSummary.bind(investmentController)
+  );
+
+  // Report routes
+  fastify.get(
+    "/accounts/:accountId/reports/monthly",
+    reportController.getMonthlyReport.bind(reportController)
+  );
+  fastify.get(
+    "/accounts/:accountId/reports/monthly/list",
+    reportController.getMonthlyReports.bind(reportController)
+  );
+  fastify.get(
+    "/accounts/:accountId/reports/yearly",
+    reportController.getYearlyReport.bind(reportController)
+  );
+
+  // Dashboard routes
+  fastify.get(
+    "/accounts/:accountId/dashboard",
+    dashboardController.getDashboard.bind(dashboardController)
   );
 }

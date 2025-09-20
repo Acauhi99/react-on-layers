@@ -6,12 +6,22 @@ export interface GetTransactionsRequest {
   limit?: number;
   year?: number;
   month?: number;
+  startDate?: Date;
+  endDate?: Date;
 }
 
 export class GetTransactionsUseCase {
   constructor(private transactionRepository: ITransactionRepository) {}
 
   async execute(request: GetTransactionsRequest): Promise<Transaction[]> {
+    if (request.startDate && request.endDate) {
+      return this.transactionRepository.findByAccountAndDateRange(
+        request.accountId,
+        request.startDate,
+        request.endDate
+      );
+    }
+
     if (request.year && request.month) {
       return this.transactionRepository.findByAccountAndMonth(
         request.accountId,

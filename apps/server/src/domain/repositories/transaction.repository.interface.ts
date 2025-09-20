@@ -9,6 +9,11 @@ export interface ITransactionRepository {
     year: number,
     month: number
   ): Promise<Transaction[]>;
+  findByAccountAndDateRange(
+    accountId: string,
+    startDate: Date,
+    endDate: Date
+  ): Promise<Transaction[]>;
   update(transaction: Transaction): Promise<void>;
   delete(id: string): Promise<void>;
   getMonthlyTotals(

@@ -123,3 +123,6 @@ financial.db
 
 # Sentry
 .sentryclirc
+
+# AmazonQ
+.amazonq/

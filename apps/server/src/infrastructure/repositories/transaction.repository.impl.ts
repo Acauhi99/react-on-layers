@@ -79,6 +79,27 @@ export class TransactionRepositoryImpl implements ITransactionRepository {
     return data.map((item) => this.toDomain(item));
   }
 
+  async findByAccountAndDateRange(
+    accountId: string,
+    startDate: Date,
+    endDate: Date
+  ): Promise<Transaction[]> {
+    const data = db.all<TransactionData>(
+      `
+      SELECT * FROM transactions
+      WHERE account_id = ? AND date BETWEEN ? AND ?
+      ORDER BY date DESC
+    `,
+      [
+        accountId,
+        startDate.toISOString().split("T")[0],
+        endDate.toISOString().split("T")[0],
+      ]
+    );
+
+    return data.map((item) => this.toDomain(item));
+  }
+
   async update(transaction: Transaction): Promise<void> {
     db.run(
       `
