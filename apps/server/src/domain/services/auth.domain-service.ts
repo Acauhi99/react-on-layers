@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import { Account } from "../entities/account.entity.js";
 import { config } from "../../config/env.js";
 
@@ -16,12 +16,18 @@ export class AuthDomainService {
   }
 
   static generateToken(accountId: string): string {
-    return jwt.sign({ accountId }, config.security.jwtSecret, { expiresIn: config.security.jwtExpiresIn });
+    return jwt.sign(
+      { accountId },
+      config.security.jwtSecret as string,
+      { expiresIn: config.security.jwtExpiresIn } as SignOptions
+    );
   }
 
   static verifyToken(token: string): { accountId: string } {
     try {
-      return jwt.verify(token, config.security.jwtSecret) as { accountId: string };
+      return jwt.verify(token, config.security.jwtSecret as string) as {
+        accountId: string;
+      };
     } catch (error) {
       throw new Error("Invalid token");
     }
