@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "~/.bun/bin/bun --watch src/index.ts",
     "build": "tsc",
-    "start": "~/.bun/bin/bun src/index.ts"
+    "start": "~/.bun/bin/bun src/index.ts",
+    "test": "~/.bun/bin/bun test",
+    "test:watch": "~/.bun/bin/bun test --watch"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.1",
