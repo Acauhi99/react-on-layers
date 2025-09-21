@@ -16,21 +16,13 @@ export default defineConfig({
     outDir: "dist",
     target: ["es2022", "chrome112", "safari16"],
     sourcemap: false,
-    minify: 'terser',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          router: ['@tanstack/react-router'],
-          ui: ['lucide-react', 'sonner'],
-        },
-      },
-    },
+    minify: "terser",
   },
   server: {
     headers: {
-      'X-Content-Type-Options': 'nosniff',
-      'X-Frame-Options': 'DENY',
-      'X-XSS-Protection': '1; mode=block',
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "X-XSS-Protection": "1; mode=block",
     },
   },
 });
