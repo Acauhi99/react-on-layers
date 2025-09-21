@@ -1,5 +1,5 @@
-import { IAccountRepository } from "../../domain/repositories/account.repository.interface.js";
-import { AuthDomainService } from "../../domain/services/auth.domain-service.js";
+import { IAccountRepository } from "@/domain/repositories/account.repository.interface";
+import { AuthDomainService } from "@/domain/services/auth.domain-service";
 
 export interface LoginAccountRequest {
   email: string;

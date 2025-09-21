@@ -1,11 +1,11 @@
+import { CreateTransactionUseCase } from "@/application/use-cases/create-transaction.use-case";
+import { DeleteTransactionUseCase } from "@/application/use-cases/delete-transaction.use-case";
+import { GetTransactionsUseCase } from "@/application/use-cases/get-transactions.use-case";
+import { UpdateTransactionUseCase } from "@/application/use-cases/update-transaction.use-case";
+import { AccountRepositoryImpl } from "@/infrastructure/repositories/account.repository.impl";
+import { CachedCategoryRepository } from "@/infrastructure/repositories/cached-category.repository";
+import { CachedTransactionRepository } from "@/infrastructure/repositories/cached-transaction.repository";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { CreateTransactionUseCase } from "../../application/use-cases/create-transaction.use-case.js";
-import { GetTransactionsUseCase } from "../../application/use-cases/get-transactions.use-case.js";
-import { UpdateTransactionUseCase } from "../../application/use-cases/update-transaction.use-case.js";
-import { DeleteTransactionUseCase } from "../../application/use-cases/delete-transaction.use-case.js";
-import { CachedTransactionRepository } from "../../infrastructure/repositories/cached-transaction.repository.js";
-import { AccountRepositoryImpl } from "../../infrastructure/repositories/account.repository.impl.js";
-import { CachedCategoryRepository } from "../../infrastructure/repositories/cached-category.repository.js";
 import { z } from "zod";
 
 const createTransactionSchema = z.object({

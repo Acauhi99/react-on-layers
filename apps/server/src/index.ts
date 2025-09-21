@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import { apiRoutes } from "./presentation/routes/api.routes.js";
 import { config } from "./config/env.js";
+import { apiRoutes } from "./presentation/routes/api.routes.js";
 
 const fastify = Fastify({ logger: true });
 
@@ -17,7 +17,10 @@ await fastify.register(apiRoutes, { prefix: "/api" });
 // Start server
 const start = async () => {
   try {
-    await fastify.listen({ port: config.server.port, host: config.server.host });
+    await fastify.listen({
+      port: config.server.port,
+      host: config.server.host,
+    });
     console.log(`🚀 Server running on http://localhost:${config.server.port}`);
   } catch (err) {
     fastify.log.error(err);

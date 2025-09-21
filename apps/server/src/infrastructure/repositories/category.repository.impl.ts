@@ -1,9 +1,6 @@
-import { ICategoryRepository } from "../../domain/repositories/category.repository.interface.js";
-import {
-  Category,
-  CategoryType,
-} from "../../domain/entities/category.entity.js";
+import { Category, CategoryType } from "@/domain/entities/category.entity.js";
 import { db } from "../database/sqlite.js";
+import { ICategoryRepository } from "@/domain/repositories/category.repository.interface.js";
 
 interface CategoryData {
   id: string;

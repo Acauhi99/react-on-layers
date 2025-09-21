@@ -1,4 +1,4 @@
-import { ITransactionRepository } from "../../domain/repositories/transaction.repository.interface.js";
+import { ITransactionRepository } from "@/domain/repositories/transaction.repository.interface";
 
 export interface DeleteTransactionRequest {
   id: string;

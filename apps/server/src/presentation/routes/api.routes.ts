@@ -1,11 +1,11 @@
 import { FastifyInstance } from "fastify";
-import { AuthController } from "../controllers/auth.controller.js";
-import { TransactionController } from "../controllers/transaction.controller.js";
-import { CategoryController } from "../controllers/category.controller.js";
-import { InvestmentController } from "../controllers/investment.controller.js";
-import { ReportController } from "../controllers/report.controller.js";
-import { DashboardController } from "../controllers/dashboard.controller.js";
-import { authMiddleware } from "../middleware/auth.middleware.js";
+import { AuthController } from "../controllers/auth.controller";
+import { TransactionController } from "../controllers/transaction.controller";
+import { CategoryController } from "../controllers/category.controller";
+import { InvestmentController } from "../controllers/investment.controller";
+import { ReportController } from "../controllers/report.controller";
+import { DashboardController } from "../controllers/dashboard.controller";
+import { authMiddleware } from "../middleware/auth.middleware";
 
 export async function apiRoutes(fastify: FastifyInstance) {
   const authController = new AuthController();

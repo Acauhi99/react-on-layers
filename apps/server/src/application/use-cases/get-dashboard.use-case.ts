@@ -1,6 +1,6 @@
-import { ITransactionRepository } from "../../domain/repositories/transaction.repository.interface.js";
-import { IInvestmentRepository } from "../../domain/repositories/investment.repository.interface.js";
-import { ICategoryRepository } from "../../domain/repositories/category.repository.interface.js";
+import { ICategoryRepository } from "@/domain/repositories/category.repository.interface";
+import { IInvestmentRepository } from "@/domain/repositories/investment.repository.interface";
+import { ITransactionRepository } from "@/domain/repositories/transaction.repository.interface";
 
 export interface GetDashboardRequest {
   accountId: string;

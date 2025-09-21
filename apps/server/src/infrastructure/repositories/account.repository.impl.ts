@@ -1,6 +1,6 @@
-import { IAccountRepository } from "../../domain/repositories/account.repository.interface.js";
-import { Account } from "../../domain/entities/account.entity.js";
+import { IAccountRepository } from "@/domain/repositories/account.repository.interface.js";
 import { db } from "../database/sqlite.js";
+import { Account } from "@/domain/entities/account.entity.js";
 
 interface AccountData {
   id: string;

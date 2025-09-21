@@ -1,7 +1,7 @@
+import { LoginAccountUseCase } from "@/application/use-cases/login-account.use-case";
+import { RegisterAccountUseCase } from "@/application/use-cases/register-account.use-case";
+import { AccountRepositoryImpl } from "@/infrastructure/repositories/account.repository.impl";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { RegisterAccountUseCase } from "../../application/use-cases/register-account.use-case.js";
-import { LoginAccountUseCase } from "../../application/use-cases/login-account.use-case.js";
-import { AccountRepositoryImpl } from "../../infrastructure/repositories/account.repository.impl.js";
 import { z } from "zod";
 
 const registerSchema = z.object({

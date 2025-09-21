@@ -1,8 +1,5 @@
-import { ICategoryRepository } from "../../domain/repositories/category.repository.interface.js";
-import {
-  Category,
-  CategoryType,
-} from "../../domain/entities/category.entity.js";
+import { Category, CategoryType } from "@/domain/entities/category.entity";
+import { ICategoryRepository } from "@/domain/repositories/category.repository.interface";
 
 export interface GetCategoriesRequest {
   accountId: string;

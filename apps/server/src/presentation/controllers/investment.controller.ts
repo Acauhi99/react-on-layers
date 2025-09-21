@@ -1,7 +1,7 @@
+import { CreateInvestmentUseCase } from "@/application/use-cases/create-investment.use-case";
+import { AccountRepositoryImpl } from "@/infrastructure/repositories/account.repository.impl";
+import { CachedInvestmentRepository } from "@/infrastructure/repositories/cached-investment.repository";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { CreateInvestmentUseCase } from "../../application/use-cases/create-investment.use-case.js";
-import { CachedInvestmentRepository } from "../../infrastructure/repositories/cached-investment.repository.js";
-import { AccountRepositoryImpl } from "../../infrastructure/repositories/account.repository.impl.js";
 import { z } from "zod";
 
 const createInvestmentSchema = z.object({

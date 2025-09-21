@@ -1,7 +1,7 @@
-import { IInvestmentRepository } from "../../domain/repositories/investment.repository.interface.js";
-import { IAccountRepository } from "../../domain/repositories/account.repository.interface.js";
-import { Investment } from "../../domain/entities/investment.entity.js";
-import { generateUUID } from "../../utils/uuid.js";
+import { Investment } from "@/domain/entities/investment.entity";
+import { IAccountRepository } from "@/domain/repositories/account.repository.interface";
+import { IInvestmentRepository } from "@/domain/repositories/investment.repository.interface";
+import { generateUUID } from "@/utils/uuid";
 
 export interface CreateInvestmentRequest {
   accountId: string;

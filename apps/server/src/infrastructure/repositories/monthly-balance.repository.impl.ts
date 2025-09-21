@@ -1,6 +1,6 @@
-import { IMonthlyBalanceRepository } from "../../domain/repositories/monthly-balance.repository.interface.js";
-import { MonthlyBalance } from "../../domain/entities/monthly-balance.entity.js";
+import { IMonthlyBalanceRepository } from "@/domain/repositories/monthly-balance.repository.interface.js";
 import { db } from "../database/sqlite.js";
+import { MonthlyBalance } from "@/domain/entities/monthly-balance.entity.js";
 
 interface MonthlyBalanceData {
   id: string;

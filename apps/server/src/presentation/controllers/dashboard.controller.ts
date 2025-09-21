@@ -1,8 +1,8 @@
+import { GetDashboardUseCase } from "@/application/use-cases/get-dashboard.use-case";
+import { CachedCategoryRepository } from "@/infrastructure/repositories/cached-category.repository";
+import { CachedInvestmentRepository } from "@/infrastructure/repositories/cached-investment.repository";
+import { CachedTransactionRepository } from "@/infrastructure/repositories/cached-transaction.repository";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { GetDashboardUseCase } from "../../application/use-cases/get-dashboard.use-case.js";
-import { CachedTransactionRepository } from "../../infrastructure/repositories/cached-transaction.repository.js";
-import { CachedInvestmentRepository } from "../../infrastructure/repositories/cached-investment.repository.js";
-import { CachedCategoryRepository } from "../../infrastructure/repositories/cached-category.repository.js";
 
 export class DashboardController {
   private transactionRepository = new CachedTransactionRepository();

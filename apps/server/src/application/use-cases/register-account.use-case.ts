@@ -1,6 +1,6 @@
-import { IAccountRepository } from "../../domain/repositories/account.repository.interface.js";
-import { AuthDomainService } from "../../domain/services/auth.domain-service.js";
-import { generateUUID } from "../../utils/uuid.js";
+import { IAccountRepository } from "@/domain/repositories/account.repository.interface";
+import { AuthDomainService } from "@/domain/services/auth.domain-service";
+import { generateUUID } from "@/utils/uuid";
 
 export interface RegisterAccountRequest {
   email: string;

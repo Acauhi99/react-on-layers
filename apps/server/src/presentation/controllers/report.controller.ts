@@ -1,8 +1,8 @@
+import { GenerateMonthlyReportUseCase } from "@/application/use-cases/generate-monthly-report.use-case";
+import { CachedInvestmentRepository } from "@/infrastructure/repositories/cached-investment.repository";
+import { CachedMonthlyBalanceRepository } from "@/infrastructure/repositories/cached-monthly-balance.repository";
+import { CachedTransactionRepository } from "@/infrastructure/repositories/cached-transaction.repository";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { GenerateMonthlyReportUseCase } from "../../application/use-cases/generate-monthly-report.use-case.js";
-import { CachedMonthlyBalanceRepository } from "../../infrastructure/repositories/cached-monthly-balance.repository.js";
-import { CachedTransactionRepository } from "../../infrastructure/repositories/cached-transaction.repository.js";
-import { CachedInvestmentRepository } from "../../infrastructure/repositories/cached-investment.repository.js";
 
 export class ReportController {
   private monthlyBalanceRepository = new CachedMonthlyBalanceRepository();

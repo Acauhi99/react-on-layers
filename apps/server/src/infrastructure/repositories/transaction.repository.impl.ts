@@ -1,6 +1,6 @@
-import { ITransactionRepository } from "../../domain/repositories/transaction.repository.interface.js";
-import { Transaction } from "../../domain/entities/transaction.entity.js";
+import { ITransactionRepository } from "@/domain/repositories/transaction.repository.interface.js";
 import { db } from "../database/sqlite.js";
+import { Transaction } from "@/domain/entities/transaction.entity.js";
 
 interface TransactionData {
   id: string;

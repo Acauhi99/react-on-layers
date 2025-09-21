@@ -1,8 +1,8 @@
+import { CreateCategoryUseCase } from "@/application/use-cases/create-category.use-case";
+import { GetCategoriesUseCase } from "@/application/use-cases/get-categories.use-case";
+import { AccountRepositoryImpl } from "@/infrastructure/repositories/account.repository.impl";
+import { CachedCategoryRepository } from "@/infrastructure/repositories/cached-category.repository";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { CreateCategoryUseCase } from "../../application/use-cases/create-category.use-case.js";
-import { GetCategoriesUseCase } from "../../application/use-cases/get-categories.use-case.js";
-import { CachedCategoryRepository } from "../../infrastructure/repositories/cached-category.repository.js";
-import { AccountRepositoryImpl } from "../../infrastructure/repositories/account.repository.impl.js";
 import { z } from "zod";
 
 const createCategorySchema = z.object({

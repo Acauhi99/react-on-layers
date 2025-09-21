@@ -1,5 +1,5 @@
+import { AuthDomainService } from "@/domain/services/auth.domain-service";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { AuthDomainService } from "../../domain/services/auth.domain-service.js";
 
 declare module "fastify" {
   interface FastifyRequest {

@@ -1,6 +1,6 @@
-import { IInvestmentRepository } from "../../domain/repositories/investment.repository.interface.js";
-import { Investment } from "../../domain/entities/investment.entity.js";
+import { IInvestmentRepository } from "@/domain/repositories/investment.repository.interface.js";
 import { db } from "../database/sqlite.js";
+import { Investment } from "@/domain/entities/investment.entity.js";
 
 interface InvestmentData {
   id: string;

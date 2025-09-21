@@ -1,7 +1,7 @@
-import { ITransactionRepository } from "../../domain/repositories/transaction.repository.interface.js";
-import { IAccountRepository } from "../../domain/repositories/account.repository.interface.js";
-import { Transaction } from "../../domain/entities/transaction.entity.js";
-import { generateUUID } from "../../utils/uuid.js";
+import { Transaction } from "@/domain/entities/transaction.entity";
+import { IAccountRepository } from "@/domain/repositories/account.repository.interface";
+import { ITransactionRepository } from "@/domain/repositories/transaction.repository.interface";
+import { generateUUID } from "@/utils/uuid";
 
 export interface CreateTransactionRequest {
   accountId: string;

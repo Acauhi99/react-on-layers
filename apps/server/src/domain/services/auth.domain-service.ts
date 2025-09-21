@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt, { SignOptions } from "jsonwebtoken";
-import { Account } from "../entities/account.entity.js";
 import { config } from "../../config/env.js";
+import { Account } from "../entities/account.entity.js";
 
 export class AuthDomainService {
   static async hashPassword(password: string): Promise<string> {

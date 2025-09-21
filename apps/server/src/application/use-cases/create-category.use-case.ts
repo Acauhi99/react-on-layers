@@ -1,10 +1,7 @@
-import { ICategoryRepository } from "../../domain/repositories/category.repository.interface.js";
-import { IAccountRepository } from "../../domain/repositories/account.repository.interface.js";
-import {
-  Category,
-  CategoryType,
-} from "../../domain/entities/category.entity.js";
-import { generateUUID } from "../../utils/uuid.js";
+import { Category, CategoryType } from "@/domain/entities/category.entity";
+import { IAccountRepository } from "@/domain/repositories/account.repository.interface";
+import { ICategoryRepository } from "@/domain/repositories/category.repository.interface";
+import { generateUUID } from "@/utils/uuid";
 
 export interface CreateCategoryRequest {
   accountId: string;

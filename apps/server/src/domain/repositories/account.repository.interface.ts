@@ -1,4 +1,4 @@
-import { Account } from "../entities/account.entity.js";
+import { Account } from "../entities/account.entity";
 
 export interface IAccountRepository {
   save(account: Account): Promise<void>;
