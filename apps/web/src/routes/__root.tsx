@@ -1,9 +1,9 @@
-import React from "react";
+import * as React from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "@/lib/query-client";
-
+import { ThemeProvider } from "next-themes";
 
 import {
   HeadContent,
@@ -48,21 +48,28 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 function RootDocument() {
   const isFetching = useRouterState({ select: (s) => s.isLoading });
 
+  React.useEffect(() => {
+    // Apply theme on mount
+    import("@/stores/theme.store").then(({ useThemeStore }) => {
+      const { applyTheme } = useThemeStore.getState();
+      applyTheme();
+    });
+  }, []);
 
   return (
-    <html lang="en" className="dark">
+    <html lang="pt-BR" className="dark">
       <head>
         <HeadContent />
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <div className="grid h-svh grid-rows-[auto_1fr]">
-            <Header />
-            {isFetching ? <Loader /> : <Outlet />}
-          </div>
-          <Toaster richColors />
-          <ReactQueryDevtools />
-          <TanStackRouterDevtools position="bottom-left" />
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <div className="grid h-svh grid-rows-[auto_1fr]">
+              <Header />
+              {isFetching ? <Loader /> : <Outlet />}
+            </div>
+            <Toaster richColors />
+          </ThemeProvider>
         </QueryClientProvider>
         <Scripts />
       </body>

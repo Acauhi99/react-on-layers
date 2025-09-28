@@ -1,29 +1,37 @@
-import { api } from '@/lib/api'
-import type { Transaction, Category } from '@/types/financial'
+import { api } from "@/lib/api";
+import type { Transaction, Category } from "@/types/financial";
 
 // Camada de Regras de Negócio
 export class FinancialService {
   // Transactions
-  async createTransaction(data: Omit<Transaction, 'id' | 'createdAt'>): Promise<Transaction> {
-    return api.post<Transaction>('/api/transactions', data)
+  async createTransaction(
+    data: Omit<Transaction, "id" | "createdAt">
+  ): Promise<Transaction> {
+    return api.post<Transaction>("/api/transactions", data);
   }
 
   async getTransactions(): Promise<Transaction[]> {
-    return api.get<Transaction[]>('/api/transactions')
+    return api.get<Transaction[]>("/api/transactions");
   }
 
   // Categories
-  async createCategory(data: Omit<Category, 'id'>): Promise<Category> {
-    return api.post<Category>('/api/categories', data)
+  async createCategory(data: Omit<Category, "id">): Promise<Category> {
+    return api.post<Category>("/api/categories", data);
   }
 
   async getCategories(): Promise<Category[]> {
-    return api.get<Category[]>('/api/categories')
+    return api.get<Category[]>("/api/categories");
   }
 
   // Balance
-  async getBalance(): Promise<{ income: number; expenses: number; total: number }> {
-    return api.get<{ income: number; expenses: number; total: number }>('/api/balance')
+  async getBalance(): Promise<{
+    income: number;
+    expenses: number;
+    total: number;
+  }> {
+    return api.get<{ income: number; expenses: number; total: number }>(
+      "/api/balance"
+    );
   }
 
   // Investment Projections
