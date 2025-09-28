@@ -3,17 +3,15 @@ import { generateUUID } from "./uuid";
 
 describe("UUID Utils", () => {
   describe("generateUUID", () => {
-    it("should generate valid UUID v7", () => {
+    it("should generate valid ULID", () => {
       // Arrange & Act
       const id = generateUUID();
 
       // Assert
       expect(id).toBeDefined();
       expect(typeof id).toBe("string");
-      expect(id).toHaveLength(36); // UUID format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-      expect(id).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-      );
+      expect(id).toHaveLength(26); // ULID format: 26 characters
+      expect(id).toMatch(/^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{26}$/i);
     });
 
     it("should generate unique IDs", () => {

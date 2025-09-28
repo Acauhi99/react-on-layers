@@ -1,5 +1,5 @@
-import { v7 } from "uuid";
+import { ulid } from "ulid";
 
 export function generateUUID(): string {
-  return v7();
+  return ulid();
 }

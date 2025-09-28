@@ -1,18 +1,18 @@
-import bcrypt from "bcryptjs";
+import { hash, verify } from "@node-rs/bcrypt";
 import jwt, { SignOptions } from "jsonwebtoken";
 import { config } from "../../config/env.js";
 import { Account } from "../entities/account.entity.js";
 
 export class AuthDomainService {
   static async hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, 10);
+    return hash(password, 10);
   }
 
   static async verifyPassword(
     password: string,
     hashedPassword: string
   ): Promise<boolean> {
-    return bcrypt.compare(password, hashedPassword);
+    return verify(password, hashedPassword);
   }
 
   static generateToken(accountId: string): string {

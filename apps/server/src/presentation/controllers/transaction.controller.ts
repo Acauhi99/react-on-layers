@@ -11,14 +11,14 @@ import { z } from "zod";
 const createTransactionSchema = z.object({
   amount: z.number().positive(),
   description: z.string().min(1),
-  category_id: z.uuid("v7"),
+  category_id: z.string().length(26),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
 
 const updateTransactionSchema = z.object({
   amount: z.number().positive().optional(),
   description: z.string().min(1).optional(),
-  category_id: z.uuid("v7").optional(),
+  category_id: z.string().length(26).optional(),
   date: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/)
