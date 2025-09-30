@@ -1,9 +1,15 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Home, ArrowLeft } from 'lucide-react';
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Home, ArrowLeft } from "lucide-react";
 
-export const Route = createFileRoute('/$404')({
+export const Route = createFileRoute("/$404")({
   component: NotFoundPage,
 });
 

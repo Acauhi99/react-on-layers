@@ -1,42 +1,42 @@
-import { useForm } from '@tanstack/react-form'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card } from '@/components/ui/card'
-import { useCreateTransaction, useCategories } from '@/hooks/use-financial'
-import { toast } from 'sonner'
+import { useForm } from "@tanstack/react-form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { useCreateTransaction, useCategories } from "@/hooks/use-financial";
+import { toast } from "sonner";
 
 export function AddTransactionForm() {
-  const createTransaction = useCreateTransaction()
-  const { data: categories } = useCategories()
+  const createTransaction = useCreateTransaction();
+  const { data: categories } = useCategories();
 
   const form = useForm({
     defaultValues: {
       amount: 0,
-      description: '',
-      category: '',
-      type: 'expense' as 'income' | 'expense',
-      date: new Date().toISOString().split('T')[0],
+      description: "",
+      category: "",
+      type: "expense" as "income" | "expense",
+      date: new Date().toISOString().split("T")[0],
     },
     onSubmit: async ({ value }) => {
       try {
-        await createTransaction.mutateAsync(value)
-        toast.success('Transação adicionada com sucesso!')
-        form.reset()
-      } catch (error) {
-        toast.error('Erro ao adicionar transação')
+        await createTransaction.mutateAsync(value);
+        toast.success("Transação adicionada com sucesso!");
+        form.reset();
+      } catch {
+        toast.error("Erro ao adicionar transação");
       }
     },
-  })
+  });
 
   return (
     <Card className="p-6">
       <h2 className="text-xl font-semibold mb-4">Nova Transação</h2>
-      
+
       <form
         onSubmit={(e) => {
-          e.preventDefault()
-          form.handleSubmit()
+          e.preventDefault();
+          form.handleSubmit();
         }}
         className="space-y-4"
       >
@@ -47,7 +47,9 @@ export function AddTransactionForm() {
                 <Label>Tipo</Label>
                 <select
                   value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value as 'income' | 'expense')}
+                  onChange={(e) =>
+                    field.handleChange(e.target.value as "income" | "expense")
+                  }
                   className="w-full p-2 border rounded"
                 >
                   <option value="expense">Despesa</option>
@@ -121,14 +123,14 @@ export function AddTransactionForm() {
           </form.Field>
         </div>
 
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           disabled={createTransaction.isPending}
           className="w-full"
         >
-          {createTransaction.isPending ? 'Salvando...' : 'Adicionar Transação'}
+          {createTransaction.isPending ? "Salvando..." : "Adicionar Transação"}
         </Button>
       </form>
     </Card>
-  )
+  );
 }

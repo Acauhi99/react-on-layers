@@ -61,16 +61,86 @@ function Home() {
   ];
 
   if (isAuthenticated) {
+    const services = [
+      {
+        icon: TrendingUp,
+        title: "Dashboard",
+        description: "Visão geral das suas finanças",
+        href: "/dashboard",
+        color: "bg-blue-500",
+      },
+      {
+        icon: PieChart,
+        title: "Transações",
+        description: "Gerencie receitas e despesas",
+        href: "/transactions",
+        color: "bg-green-500",
+      },
+      {
+        icon: Target,
+        title: "Investimentos",
+        description: "Acompanhe seus investimentos",
+        href: "/investments",
+        color: "bg-purple-500",
+      },
+      {
+        icon: BarChart3,
+        title: "Relatórios",
+        description: "Análises e relatórios detalhados",
+        href: "/reports",
+        color: "bg-orange-500",
+      },
+      {
+        icon: Shield,
+        title: "Categorias",
+        description: "Organize suas transações",
+        href: "/categories",
+        color: "bg-red-500",
+      },
+      {
+        icon: Smartphone,
+        title: "Configurações",
+        description: "Personalize sua experiência",
+        href: "/settings",
+        color: "bg-gray-500",
+      },
+    ];
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Bem-vindo de volta!
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Continue gerenciando suas finanças de forma inteligente
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">Painel Financeiro</h1>
+            <p className="text-muted-foreground">
+              Acesse todas as funcionalidades do sistema
             </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service) => {
+              const Icon = service.icon;
+              return (
+                <Card
+                  key={service.title}
+                  className="hover:shadow-lg transition-shadow cursor-pointer group"
+                  onClick={() => (window.location.href = service.href)}
+                >
+                  <CardHeader>
+                    <div
+                      className={`w-12 h-12 ${service.color} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+                    >
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-xl">{service.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-base">
+                      {service.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </div>

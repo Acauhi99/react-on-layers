@@ -34,6 +34,16 @@ export class FinancialService {
     );
   }
 
+  // Monthly Expenses
+  async getMonthlyExpensesByCategory(
+    year: number,
+    month: number
+  ): Promise<{ category: string; amount: number }[]> {
+    return api.get<{ category: string; amount: number }[]>(
+      `/api/expenses/monthly?year=${year}&month=${month}`
+    );
+  }
+
   // Investment Projections
   calculateInvestmentProjection(
     monthlyAmount: number,

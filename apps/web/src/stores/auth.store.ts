@@ -10,7 +10,6 @@ interface User {
 
 interface AuthState {
   token: string | null;
-  user: User | null;
   isAuthenticated: boolean;
   login: (token: string) => void;
   logout: () => void;
@@ -22,7 +21,6 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       token: null,
-      user: null,
       isAuthenticated: false,
 
       login: (token: string) => {
@@ -31,17 +29,11 @@ export const useAuthStore = create<AuthState>()(
           throw new Error("Token inválido");
         }
 
-        const user = {
-          id: payload.accountId,
-          email: payload.email,
-          name: payload.name,
-        };
-
-        set({ token, user, isAuthenticated: true });
+        set({ token, isAuthenticated: true });
       },
 
       logout: () => {
-        set({ token: null, user: null, isAuthenticated: false });
+        set({ token: null, isAuthenticated: false });
       },
 
       getUser: () => {
