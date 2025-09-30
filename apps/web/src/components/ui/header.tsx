@@ -55,7 +55,11 @@ export default function Header() {
                   onClick={() =>
                     setColorTheme(theme as keyof typeof colorThemes)
                   }
-                  className={colorTheme === theme ? "bg-accent" : ""}
+                  className={
+                    colorTheme === theme
+                      ? "bg-primary text-primary-foreground"
+                      : ""
+                  }
                 >
                   <div className="flex items-center gap-2">
                     <div
