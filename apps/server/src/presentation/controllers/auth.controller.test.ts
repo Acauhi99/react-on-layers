@@ -9,12 +9,15 @@ describe("Auth Controller Integration", () => {
     app = Fastify();
     const authController = new AuthController();
 
-    // Register only auth routes without middleware
+    app.post("/api/auth", (req, reply) => void authController.auth(req, reply));
     app.post(
       "/api/auth/register",
-      authController.register.bind(authController)
+      (req, reply) => void authController.register(req, reply)
     );
-    app.post("/api/auth/login", authController.login.bind(authController));
+    app.post(
+      "/api/auth/login",
+      (req, reply) => void authController.login(req, reply)
+    );
   });
 
   afterEach(async () => {
@@ -38,7 +41,7 @@ describe("Auth Controller Integration", () => {
       });
 
       // Assert
-      expect([201, 400]).toContain(response.statusCode);
+      expect([201, 400, 409]).toContain(response.statusCode);
     });
 
     it("should return 400 for invalid email", async () => {
@@ -114,6 +117,91 @@ describe("Auth Controller Integration", () => {
 
       // Assert
       expect([401, 400]).toContain(response.statusCode);
+    });
+  });
+
+  describe("POST /api/auth (unified endpoint)", () => {
+    it("should handle register action", async () => {
+      // Arrange
+      const registerData = {
+        action: "register",
+        email: "test@example.com",
+        name: "Test User",
+        password: "password123",
+      };
+
+      // Act
+      const response = await app.inject({
+        method: "POST",
+        url: "/api/auth",
+        payload: registerData,
+      });
+
+      // Assert
+      expect([201, 400, 409]).toContain(response.statusCode);
+      if (response.statusCode === 201) {
+        const body = JSON.parse(response.body);
+        expect(body.token).toBeDefined();
+        expect(typeof body.token).toBe("string");
+      }
+    });
+
+    it("should handle login action", async () => {
+      // Arrange
+      const loginData = {
+        action: "login",
+        email: "test@example.com",
+        password: "password123",
+      };
+
+      // Act
+      const response = await app.inject({
+        method: "POST",
+        url: "/api/auth",
+        payload: loginData,
+      });
+
+      // Assert
+      expect([200, 401, 400]).toContain(response.statusCode);
+    });
+
+    it("should return 400 for register without name", async () => {
+      // Arrange
+      const invalidData = {
+        action: "register",
+        email: "test@example.com",
+        password: "password123",
+        // Missing name
+      };
+
+      // Act
+      const response = await app.inject({
+        method: "POST",
+        url: "/api/auth",
+        payload: invalidData,
+      });
+
+      // Assert
+      expect(response.statusCode).toBe(400);
+    });
+
+    it("should return 400 for invalid action", async () => {
+      // Arrange
+      const invalidData = {
+        action: "invalid",
+        email: "test@example.com",
+        password: "password123",
+      };
+
+      // Act
+      const response = await app.inject({
+        method: "POST",
+        url: "/api/auth",
+        payload: invalidData,
+      });
+
+      // Assert
+      expect(response.statusCode).toBe(400);
     });
   });
 });

@@ -51,12 +51,16 @@ describe("AuthDomainService", () => {
   });
 
   describe("generateToken", () => {
-    it("should generate valid JWT token", () => {
+    it("should generate valid JWT token with account data", () => {
       // Arrange
-      const accountId = "test-account-id";
+      const account = {
+        id: "test-account-id",
+        email: "test@example.com",
+        name: "Test User",
+      };
 
       // Act
-      const token = AuthDomainService.generateToken(accountId);
+      const token = AuthDomainService.generateToken(account);
 
       // Assert
       expect(token).toBeDefined();
@@ -66,16 +70,22 @@ describe("AuthDomainService", () => {
   });
 
   describe("verifyToken", () => {
-    it("should verify valid token", () => {
+    it("should verify valid token and return account data", () => {
       // Arrange
-      const accountId = "test-account-id";
-      const token = AuthDomainService.generateToken(accountId);
+      const account = {
+        id: "test-account-id",
+        email: "test@example.com",
+        name: "Test User",
+      };
+      const token = AuthDomainService.generateToken(account);
 
       // Act
       const decoded = AuthDomainService.verifyToken(token);
 
       // Assert
-      expect(decoded.accountId).toBe(accountId);
+      expect(decoded.accountId).toBe(account.id);
+      expect(decoded.email).toBe(account.email);
+      expect(decoded.name).toBe(account.name);
     });
 
     it("should throw error for invalid token", () => {

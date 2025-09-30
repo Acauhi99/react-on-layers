@@ -38,9 +38,9 @@ describe("LoginAccountUseCase", () => {
       const result = await useCase.execute(request);
 
       // Assert
-      expect(result.account.email).toBe(request.email);
-      expect(result.account.name).toBe(account.name);
       expect(result.token).toBeDefined();
+      expect(typeof result.token).toBe("string");
+      expect(result.token.split(".")).toHaveLength(3); // JWT format
       expect(mockAccountRepository.findByEmail).toHaveBeenCalledWith(
         request.email
       );
