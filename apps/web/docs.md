@@ -1,4 +1,149 @@
-# Frontend Development Plan
+# Frontend Development Guide
+
+## 🏗️ Arquitetura e Padrões
+
+### Separação de Responsabilidades
+- **Componentes**: Apenas apresentação e UI
+- **Hooks**: Lógica de negócio e estado
+- **Serviços**: Comunicação com APIs
+- **Stores**: Estado global (Zustand)
+- **Validações**: Schemas centralizados (Zod)
+
+### Padrões Obrigatórios
+
+#### 1. Componentes Limpos
+- **NUNCA** fazer chamadas de API diretamente nos componentes
+- **SEMPRE** usar hooks customizados para lógica
+- Focar apenas na apresentação
+
+```tsx
+// ❌ ERRADO
+export function MyComponent() {
+  const [data, setData] = useState();
+  
+  useEffect(() => {
+    fetch('/api/data').then(res => setData(res.json()));
+  }, []);
+}
+
+// ✅ CORRETO
+export function MyComponent() {
+  const { data, isLoading } = useMyData();
+}
+```
+
+#### 2. Hooks Customizados
+- Encapsular lógica de negócio
+- Usar TanStack Query para cache e estado
+- Tratamento de erros centralizado
+
+```tsx
+export function useMyData() {
+  return useQuery({
+    queryKey: ['myData'],
+    queryFn: MyService.getData,
+    onError: (error) => toast.error(error.message),
+  });
+}
+```
+
+#### 3. Serviços de API
+- Classes estáticas para organização
+- Métodos async/await
+- Tratamento de erros padronizado
+- Interfaces TypeScript
+
+```typescript
+export class MyService {
+  static async getData(): Promise<MyData[]> {
+    const response = await fetch('/api/data');
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Erro na requisição');
+    }
+    return response.json();
+  }
+}
+```
+
+#### 4. Validação Centralizada
+- Schemas Zod em `/lib/validations/`
+- Hook `useFormValidation` para reutilização
+- Mensagens de erro em português
+
+```typescript
+// lib/validations/auth.ts
+export const loginSchema = z.object({
+  email: z.string().email("Email inválido"),
+  password: z.string().min(1, "Senha é obrigatória"),
+});
+
+// No componente
+const { validateAndExecute } = useFormValidation();
+
+const handleSubmit = (data) => {
+  validateAndExecute(loginSchema, data, (validData) => {
+    mutation.mutate(validData);
+  });
+};
+```
+
+#### 5. Estado Global (Zustand)
+- **Persistência seletiva**: Apenas dados essenciais
+- **JWT Security**: Informações do usuário derivadas do token
+- **Auto-logout**: Validação automática de expiração
+
+```typescript
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      token: null,
+      login: (token: string) => {
+        const payload = decodeJWT(token);
+        if (!payload || isTokenExpired(token)) {
+          throw new Error('Token inválido');
+        }
+        set({ token, isAuthenticated: true });
+      },
+      getUser: () => {
+        const { token } = get();
+        return token ? decodeJWT(token) : null;
+      },
+    }),
+    {
+      name: 'auth-storage',
+      partialize: (state) => ({ token: state.token }), // Só persiste o token
+    }
+  )
+);
+```
+
+#### 6. Roteamento
+- Rota unificada `/auth` com parâmetros de busca
+- Validação de autenticação em `beforeLoad`
+- Redirecionamentos apropriados
+
+```tsx
+export const Route = createFileRoute("/auth")({
+  validateSearch: z.object({
+    mode: z.enum(["login", "register"]).default("login"),
+  }),
+  beforeLoad: () => {
+    const { isAuthenticated } = useAuthStore.getState();
+    if (isAuthenticated) {
+      throw redirect({ to: "/" });
+    }
+  },
+});
+```
+
+#### 7. Segurança JWT
+- **NUNCA** armazenar dados do usuário separadamente
+- Decodificar JWT no frontend para obter informações
+- Validação de expiração automática
+- Logout automático em tokens inválidos
+
+---
 
 ## 📱 Stack Tecnológica
 
@@ -14,19 +159,15 @@
 
 ## 🔐 1. Autenticação
 
-### Login (`/login`)
+### Rota Unificada (`/auth`)
 
-- Formulário com email/senha
-- Validação com Zod
-- Redirecionamento após login
-- Link para registro
-
-### Registro (`/register`)
-
-- Formulário com nome, email, senha
-- Validação de força da senha
-- Criação automática de conta
-- Redirecionamento para dashboard
+- **Login**: `/auth?mode=login` (padrão)
+- **Registro**: `/auth?mode=register`
+- Formulários com validação Zod centralizada
+- Hooks customizados para lógica de negócio
+- Serviço de API dedicado
+- JWT com informações do usuário integradas
+- Redirecionamento automático após sucesso
 
 ---
 
@@ -156,27 +297,54 @@
 
 ---
 
-## 📁 Estrutura de Pastas Sugerida
+## 📁 Estrutura de Pastas Implementada
 
 ```
 src/
 ├── components/
-│   ├── ui/           # Componentes base
-│   ├── forms/        # Formulários reutilizáveis
-│   ├── charts/       # Gráficos
-│   └── layout/       # Layout components
+│   ├── ui/              # Componentes base (Button, Input, etc.)
+│   └── theme-provider.tsx # Provider de tema customizado
 ├── features/
-│   ├── auth/         # Autenticação
-│   ├── dashboard/    # Dashboard
-│   ├── transactions/ # Transações
-│   ├── categories/   # Categorias
-│   ├── investments/  # Investimentos
-│   ├── reports/      # Relatórios
-│   └── settings/     # Configurações
-├── hooks/            # Custom hooks
-├── lib/              # Utilitários
-├── services/         # API services
-├── stores/           # Zustand stores
-├── types/            # TypeScript types
-└── routes/           # Rotas
+│   └── auth/            # Componentes de autenticação
+│       ├── login-form.tsx
+│       └── register-form.tsx
+├── hooks/               # Custom hooks
+│   ├── use-auth.ts      # Hooks de autenticação
+│   └── use-form-validation.ts # Validação de formulários
+├── lib/
+│   ├── jwt.ts           # Utilitários JWT
+│   ├── query-client.ts  # Configuração TanStack Query
+│   └── validations/     # Schemas de validação
+│       └── auth.ts
+├── services/            # Serviços de API
+│   ├── auth.service.ts
+│   └── financial.service.ts
+├── stores/              # Zustand stores
+│   ├── auth.store.ts    # Estado de autenticação
+│   └── theme.store.ts   # Estado do tema
+└── routes/              # Rotas TanStack Router
+    ├── __root.tsx       # Layout raiz
+    ├── index.tsx        # Página inicial
+    └── auth.tsx         # Rota unificada de autenticação
 ```
+
+## 🔄 Fluxo de Desenvolvimento
+
+1. **Criar Serviço**: Definir interface e métodos de API
+2. **Criar Hook**: Encapsular lógica com TanStack Query
+3. **Criar Validação**: Schema Zod centralizado
+4. **Criar Componente**: UI pura usando hooks
+5. **Testes**: Testar hook e serviço separadamente
+
+## ⚙️ Configurações Importantes
+
+### Theme Provider
+- Evita problemas de hidratação SSR
+- Aplica tema apenas após hidratação
+- Persistência seletiva no Zustand
+
+### JWT Security
+- Decodificação client-side segura
+- Validação de expiração automática
+- Logout em tokens inválidos
+- Persistência apenas do token
