@@ -71,9 +71,6 @@ function Home() {
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Continue gerenciando suas finanças de forma inteligente
             </p>
-            <Button size="lg" onClick={() => window.location.reload()}>
-              Atualizar Página
-            </Button>
           </div>
         </div>
       </div>
@@ -96,10 +93,14 @@ function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild>
-              <Link to="/register">Começar Gratuitamente</Link>
+              <Link to="/auth" search={{ mode: "register" }}>
+                Começar Gratuitamente
+              </Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <Link to="/login">Já tenho conta</Link>
+              <Link to="/auth" search={{ mode: "login" }}>
+                Já tenho conta
+              </Link>
             </Button>
           </div>
         </div>
@@ -137,7 +138,9 @@ function Home() {
             financeira
           </p>
           <Button size="lg" asChild>
-            <Link to="/register">Criar Conta Gratuita</Link>
+            <Link to="/auth" search={{ mode: "register" }}>
+              Criar Conta Gratuita
+            </Link>
           </Button>
         </div>
       </div>

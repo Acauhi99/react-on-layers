@@ -1,5 +1,5 @@
 import { hash, verify } from "@node-rs/bcrypt";
-import jwt, { SignOptions } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { config } from "../../config/env.js";
 import { Account } from "../entities/account.entity.js";
 
@@ -15,20 +15,34 @@ export class AuthDomainService {
     return verify(password, hashedPassword);
   }
 
-  static generateToken(accountId: string): string {
-    return jwt.sign(
-      { accountId },
-      config.security.jwtSecret as string,
-      { expiresIn: config.security.jwtExpiresIn } as SignOptions
-    );
+  static generateToken(account: {
+    id: string;
+    email: string;
+    name: string;
+  }): string {
+    const payload = {
+      accountId: account.id,
+      email: account.email,
+      name: account.name,
+    };
+    const secret = config.security.jwtSecret;
+    const options = { expiresIn: "7d" as const };
+
+    return jwt.sign(payload, secret, options);
   }
 
-  static verifyToken(token: string): { accountId: string } {
+  static verifyToken(token: string): {
+    accountId: string;
+    email: string;
+    name: string;
+  } {
     try {
-      return jwt.verify(token, config.security.jwtSecret as string) as {
+      return jwt.verify(token, config.security.jwtSecret) as {
         accountId: string;
+        email: string;
+        name: string;
       };
-    } catch (error) {
+    } catch {
       throw new Error("Invalid token");
     }
   }

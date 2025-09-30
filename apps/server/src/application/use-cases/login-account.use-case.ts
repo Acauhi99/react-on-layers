@@ -8,15 +8,10 @@ export interface LoginAccountRequest {
 
 export interface LoginAccountResponse {
   token: string;
-  account: {
-    id: string;
-    email: string;
-    name: string;
-  };
 }
 
 export class LoginAccountUseCase {
-  constructor(private accountRepository: IAccountRepository) {}
+  constructor(private readonly accountRepository: IAccountRepository) {}
 
   async execute(request: LoginAccountRequest): Promise<LoginAccountResponse> {
     const account = await this.accountRepository.findByEmail(request.email);
@@ -32,15 +27,12 @@ export class LoginAccountUseCase {
       throw new Error("Invalid credentials");
     }
 
-    const token = AuthDomainService.generateToken(account.id);
+    const token = AuthDomainService.generateToken({
+      id: account.id,
+      email: account.email,
+      name: account.name,
+    });
 
-    return {
-      token,
-      account: {
-        id: account.id,
-        email: account.email,
-        name: account.name,
-      },
-    };
+    return { token };
   }
 }

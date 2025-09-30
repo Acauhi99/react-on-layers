@@ -10,15 +10,10 @@ export interface RegisterAccountRequest {
 
 export interface RegisterAccountResponse {
   token: string;
-  account: {
-    id: string;
-    email: string;
-    name: string;
-  };
 }
 
 export class RegisterAccountUseCase {
-  constructor(private accountRepository: IAccountRepository) {}
+  constructor(private readonly accountRepository: IAccountRepository) {}
 
   async execute(
     request: RegisterAccountRequest
@@ -41,15 +36,12 @@ export class RegisterAccountUseCase {
     );
 
     await this.accountRepository.save(account);
-    const token = AuthDomainService.generateToken(account.id);
+    const token = AuthDomainService.generateToken({
+      id: account.id,
+      email: account.email,
+      name: account.name,
+    });
 
-    return {
-      token,
-      account: {
-        id: account.id,
-        email: account.email,
-        name: account.name,
-      },
-    };
+    return { token };
   }
 }

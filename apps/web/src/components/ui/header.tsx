@@ -95,10 +95,14 @@ export default function Header() {
           ) : (
             <div className="flex items-center space-x-2">
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/login">Entrar</Link>
+                <Link to="/auth" search={{ mode: "login" }}>
+                  Entrar
+                </Link>
               </Button>
               <Button size="sm" asChild>
-                <Link to="/register">Cadastrar</Link>
+                <Link to="/auth" search={{ mode: "register" }}>
+                  Cadastrar
+                </Link>
               </Button>
             </div>
           )}

@@ -1,5 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { decodeJWT, isTokenExpired } from "@/lib/jwt";
 
 interface User {
   id: string;
@@ -8,24 +9,75 @@ interface User {
 }
 
 interface AuthState {
-  user: User | null;
   token: string | null;
+  user: User | null;
   isAuthenticated: boolean;
-  login: (user: User, token: string) => void;
+  login: (token: string) => void;
   logout: () => void;
+  getUser: () => User | null;
+  isTokenValid: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
-      user: null,
+    (set, get) => ({
       token: null,
+      user: null,
       isAuthenticated: false,
-      login: (user, token) => set({ user, token, isAuthenticated: true }),
-      logout: () => set({ user: null, token: null, isAuthenticated: false }),
+
+      login: (token: string) => {
+        const payload = decodeJWT(token);
+        if (!payload || isTokenExpired(token)) {
+          throw new Error("Token inválido");
+        }
+
+        const user = {
+          id: payload.accountId,
+          email: payload.email,
+          name: payload.name,
+        };
+
+        set({ token, user, isAuthenticated: true });
+      },
+
+      logout: () => {
+        set({ token: null, user: null, isAuthenticated: false });
+      },
+
+      getUser: () => {
+        const { token } = get();
+        if (!token || isTokenExpired(token)) {
+          get().logout();
+          return null;
+        }
+
+        const payload = decodeJWT(token);
+        return payload
+          ? {
+              id: payload.accountId,
+              email: payload.email,
+              name: payload.name,
+            }
+          : null;
+      },
+
+      isTokenValid: () => {
+        const { token } = get();
+        return token ? !isTokenExpired(token) : false;
+      },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
+      partialize: (state) => ({ token: state.token }),
+      onRehydrateStorage: () => (state) => {
+        if (state?.token) {
+          try {
+            state.login(state.token);
+          } catch {
+            state.logout();
+          }
+        }
+      },
     }
   )
 );

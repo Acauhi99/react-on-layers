@@ -16,75 +16,93 @@ export async function apiRoutes(fastify: FastifyInstance) {
   const dashboardController = new DashboardController();
 
   // Auth routes (public)
-  fastify.post("/auth/register", authController.register.bind(authController));
-  fastify.post("/auth/login", authController.login.bind(authController));
+  fastify.post("/auth", (req, reply) => void authController.auth(req, reply));
+  fastify.post(
+    "/auth/register",
+    (req, reply) => void authController.register(req, reply)
+  );
+  fastify.post(
+    "/auth/login",
+    (req, reply) => void authController.login(req, reply)
+  );
 
-  // Protected routes
-  fastify.addHook("preHandler", authMiddleware);
-
-  // Category routes
+  // Category routes (protected)
   fastify.post(
     "/accounts/:accountId/categories",
-    categoryController.create.bind(categoryController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void categoryController.create(req, reply)
   );
   fastify.get(
     "/accounts/:accountId/categories",
-    categoryController.getByAccount.bind(categoryController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void categoryController.getByAccount(req, reply)
   );
 
-  // Transaction routes
+  // Transaction routes (protected)
   fastify.post(
     "/accounts/:accountId/transactions",
-    transactionController.create.bind(transactionController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void transactionController.create(req, reply)
   );
   fastify.get(
     "/accounts/:accountId/transactions",
-    transactionController.getByAccount.bind(transactionController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void transactionController.getByAccount(req, reply)
   );
   fastify.get(
     "/transactions/:id",
-    transactionController.getById.bind(transactionController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void transactionController.getById(req, reply)
   );
   fastify.put(
     "/transactions/:id",
-    transactionController.update.bind(transactionController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void transactionController.update(req, reply)
   );
   fastify.delete(
     "/transactions/:id",
-    transactionController.delete.bind(transactionController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void transactionController.delete(req, reply)
   );
 
-  // Investment routes
+  // Investment routes (protected)
   fastify.post(
     "/accounts/:accountId/investments",
-    investmentController.create.bind(investmentController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void investmentController.create(req, reply)
   );
   fastify.get(
     "/accounts/:accountId/investments",
-    investmentController.getByAccount.bind(investmentController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void investmentController.getByAccount(req, reply)
   );
   fastify.get(
     "/accounts/:accountId/investments/summary",
-    investmentController.getSummary.bind(investmentController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void investmentController.getSummary(req, reply)
   );
 
-  // Report routes
+  // Report routes (protected)
   fastify.get(
     "/accounts/:accountId/reports/monthly",
-    reportController.getMonthlyReport.bind(reportController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void reportController.getMonthlyReport(req, reply)
   );
   fastify.get(
     "/accounts/:accountId/reports/monthly/list",
-    reportController.getMonthlyReports.bind(reportController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void reportController.getMonthlyReports(req, reply)
   );
   fastify.get(
     "/accounts/:accountId/reports/yearly",
-    reportController.getYearlyReport.bind(reportController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void reportController.getYearlyReport(req, reply)
   );
 
-  // Dashboard routes
+  // Dashboard routes (protected)
   fastify.get(
     "/accounts/:accountId/dashboard",
-    dashboardController.getDashboard.bind(dashboardController)
+    { preHandler: (req, reply) => void authMiddleware(req, reply) },
+    (req, reply) => void dashboardController.getDashboard(req, reply)
   );
 }
