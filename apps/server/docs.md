@@ -3,6 +3,7 @@
 ## 🏗️ Arquitetura e Padrões
 
 ### Clean Architecture
+
 - **Domain**: Entidades, repositórios (interfaces), serviços de domínio
 - **Application**: Use cases (regras de negócio)
 - **Infrastructure**: Implementações de repositórios, cache, database
@@ -11,41 +12,73 @@
 ### Padrões Obrigatórios
 
 #### 1. Controllers
-- **SEMPRE** estender `BaseController`
+
+- **AuthController** estende `BaseController` e usa `handleRequest()`
+- **Outros controllers** usam try/catch manual para tratamento de erros
 - **NÃO** colocar lógica de negócio nos controllers
-- Usar `handleRequest()` para tratamento padronizado
 - Validação com Zod schemas
+- Injeção de dependências via instanciação direta
 
 ```typescript
-export class ExampleController extends BaseController {
-  async create(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+// AuthController (usa BaseController)
+export class AuthController extends BaseController {
+  async register(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     await this.handleRequest(
       request,
       reply,
-      createSchema,
+      registerSchema,
       async (data) => {
-        const useCase = new CreateExampleUseCase(this.repository);
+        const useCase = new RegisterAccountUseCase(this.accountRepository);
         return useCase.execute(data);
       },
       201
     );
   }
 }
+
+// Outros controllers (try/catch manual)
+export class TransactionController {
+  async create(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const body = createTransactionSchema.parse(request.body);
+      const useCase = new CreateTransactionUseCase(
+        this.transactionRepository,
+        this.accountRepository
+      );
+      const result = await useCase.execute(data);
+      reply.status(201).send(result);
+    } catch (error) {
+      reply.status(400).send({ error: (error as Error).message });
+    }
+  }
+}
 ```
 
 #### 2. Validação
+
 - Schemas Zod com mensagens em português
-- Validação centralizada no BaseController
-- Tratamento de erros padronizado
+- Validação centralizada no BaseController (apenas AuthController)
+- Validação manual nos outros controllers
+- IDs são ULIDs de 26 caracteres
+- Datas no formato YYYY-MM-DD
 
 ```typescript
-const createSchema = z.object({
-  email: z.string().email("Email inválido"),
+const createTransactionSchema = z.object({
+  amount: z.number().positive(),
+  description: z.string().min(1),
+  category_id: z.string().length(26), // ULID
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+});
+
+const registerSchema = z.object({
+  email: z.email("Email inválido"),
   name: z.string().min(1, "Nome é obrigatório"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
 });
 ```
 
 #### 3. Autenticação JWT
+
 - **NUNCA** retornar dados do usuário separadamente
 - Informações do usuário **DENTRO** do token JWT
 - Middleware adiciona `request.user` com dados decodificados
@@ -59,6 +92,7 @@ return { token }; // dados dentro do JWT
 ```
 
 #### 4. Rotas
+
 - Usar arrow functions com `void` para evitar warnings
 - Middleware aplicado individualmente nas rotas protegidas
 
@@ -75,6 +109,7 @@ fastify.post(
 ```
 
 #### 5. Testes
+
 - **SEMPRE** testar use cases isoladamente
 - Testes de integração para controllers
 - Mocks para dependências externas
@@ -85,10 +120,10 @@ describe("UseCase", () => {
   it("should handle success case", async () => {
     // Arrange
     const mockRepo = { method: mock(() => Promise.resolve(data)) };
-    
+
     // Act
     const result = await useCase.execute(input);
-    
+
     // Assert
     expect(result).toBeDefined();
   });
@@ -452,31 +487,37 @@ Dados do dashboard da conta.
 
 ```json
 {
-  "totalIncome": 5000.0,
-  "totalExpenses": 3000.0,
+  "currentMonth": {
+    "income": 5000.0,
+    "expenses": 3000.0,
+    "balance": 2000.0,
+    "investments": 2000.0
+  },
   "totalInvestments": 2000.0,
-  "balance": 2000.0,
-  "expensesByCategory": [
-    {
-      "categoryId": "01JGXYZ123ABC456DEF789GHI1",
-      "categoryName": "Alimentação",
-      "total": 800.0
-    }
-  ],
-  "incomeByCategory": [
-    {
-      "categoryId": "01JGXYZ123ABC456DEF789GHI4",
-      "categoryName": "Salário",
-      "total": 5000.0
-    }
-  ],
   "investmentAllocation": [
     {
-      "investmentTypeId": "bonds",
-      "total_amount": 1200.0,
+      "typeName": "Tesouro Direto",
+      "totalAmount": 1200.0,
+      "count": 3,
       "percentage": 60.0
     }
-  ]
+  ],
+  "recentTransactions": [
+    {
+      "id": "01JGXYZ123ABC456DEF789GHI2",
+      "accountId": "01JGXYZ123ABC456DEF789GHI0",
+      "amount": 50.0,
+      "description": "Almoço",
+      "categoryId": "01JGXYZ123ABC456DEF789GHI1",
+      "date": "2024-01-01T00:00:00.000Z",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "modifiedAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "categoriesCount": {
+    "income": 2,
+    "expense": 5
+  }
 }
 ```
 
@@ -503,6 +544,7 @@ Relatório mensal.
   "month": 1,
   "totalIncome": 5000.0,
   "totalExpenses": 3000.0,
+  "netBalance": 2000.0,
   "totalInvestments": 1000.0,
   "availableToInvest": 1000.0,
   "createdAt": "2024-01-01T00:00:00.000Z",
@@ -529,6 +571,7 @@ Lista de relatórios mensais.
     "month": 1,
     "totalIncome": 5000.0,
     "totalExpenses": 3000.0,
+    "netBalance": 2000.0,
     "totalInvestments": 1000.0,
     "availableToInvest": 1000.0,
     "createdAt": "2024-01-01T00:00:00.000Z",
@@ -552,15 +595,22 @@ Relatório anual.
   "year": 2024,
   "totalIncome": 60000.0,
   "totalExpenses": 36000.0,
+  "netBalance": 24000.0,
   "totalInvestments": 12000.0,
   "availableToInvest": 12000.0,
   "monthlyData": [
     {
+      "id": "01JGXYZ123ABC456DEF789GHI5",
+      "accountId": "01JGXYZ123ABC456DEF789GHI0",
+      "year": 2024,
       "month": 1,
       "totalIncome": 5000.0,
       "totalExpenses": 3000.0,
+      "netBalance": 2000.0,
       "totalInvestments": 1000.0,
-      "availableToInvest": 1000.0
+      "availableToInvest": 1000.0,
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "modifiedAt": "2024-01-01T00:00:00.000Z"
     }
   ]
 }
@@ -578,6 +628,21 @@ Relatório anual.
 }
 ```
 
+**Para erros de validação Zod (apenas AuthController):**
+
+```json
+{
+  "error": "Validation error",
+  "details": [
+    {
+      "code": "invalid_string",
+      "message": "Email inválido",
+      "path": ["email"]
+    }
+  ]
+}
+```
+
 ### 401 Unauthorized
 
 ```json
@@ -590,7 +655,15 @@ Relatório anual.
 
 ```json
 {
-  "error": "Resource not found"
+  "error": "Transaction not found"
+}
+```
+
+### 409 Conflict
+
+```json
+{
+  "error": "Account with this email already exists"
 }
 ```
 
@@ -607,6 +680,30 @@ Relatório anual.
 ## 📝 Notes
 
 - Todos os IDs são ULIDs (26 caracteres)
-- Datas seguem formato ISO 8601
+- Datas de entrada no formato YYYY-MM-DD, retornadas em ISO 8601
 - Valores monetários são números decimais
 - Autenticação JWT expira conforme configuração do servidor
+- AuthController usa BaseController com tratamento padronizado
+- Outros controllers usam try/catch manual
+- Repositórios usam cache (CachedRepository) para melhor performance
+- Arquitetura Clean com separação clara de responsabilidades
+
+## 🏗️ Estrutura de Arquivos
+
+```
+src/
+├── application/use-cases/     # Casos de uso (regras de negócio)
+├── domain/
+│   ├── entities/             # Entidades de domínio
+│   ├── repositories/         # Interfaces dos repositórios
+│   └── services/            # Serviços de domínio
+├── infrastructure/
+│   ├── cache/               # Implementação de cache
+│   ├── database/            # Configuração do banco
+│   └── repositories/        # Implementações dos repositórios
+├── presentation/
+│   ├── controllers/         # Controllers da API
+│   ├── middleware/          # Middlewares
+│   └── routes/             # Definição das rotas
+└── utils/                  # Utilitários
+```

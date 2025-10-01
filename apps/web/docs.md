@@ -122,8 +122,6 @@ Stores (Global)     → Zustand para shared state
 src/
 ├── components/ui/          # Componentes base
 ├── features/              # Funcionalidades por domínio
-│   ├── auth/
-│   └── financial/
 ├── hooks/                 # Custom hooks (TanStack Query)
 ├── services/              # Classes de API
 ├── stores/                # Zustand stores
@@ -192,18 +190,6 @@ user: { id: '123', name: 'João' } // Não fazer isso
    - Não persistir dados deriváveis
    - Validar tokens
    - Tratar erros de auth
-
----
-
-## 🎯 Ordem de Desenvolvimento
-
-1. **Auth** → Base para tudo
-2. **Dashboard** → Visão geral
-3. **Transações** → Core do sistema
-4. **Categorias** → Suporte
-5. **Investimentos** → Expansão
-6. **Relatórios** → Análise
-7. **Configurações** → Personalização
 
 ---
 
