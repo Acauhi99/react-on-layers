@@ -16,6 +16,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { useAuthStore } from "@/stores/auth.store";
+import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -23,6 +24,19 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { isAuthenticated } = useAuthStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   const features = [
     {

@@ -1,8 +1,6 @@
-import * as React from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/query-client";
-import { ThemeProvider } from "@/components/theme-provider";
 
 import {
   HeadContent,
@@ -50,28 +48,18 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 function RootDocument() {
   const isFetching = useRouterState({ select: (s) => s.isLoading });
 
-  React.useEffect(() => {
-    // Apply theme on mount
-    import("@/stores/theme.store").then(({ useThemeStore }) => {
-      const { applyTheme } = useThemeStore.getState();
-      applyTheme();
-    });
-  }, []);
-
   return (
     <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            <div className="grid h-svh grid-rows-[auto_1fr]">
-              <Header />
-              {isFetching ? <Loader /> : <Outlet />}
-            </div>
-            <Toaster richColors />
-          </ThemeProvider>
+          <div className="grid h-svh grid-rows-[auto_1fr]">
+            <Header />
+            {isFetching ? <Loader /> : <Outlet />}
+          </div>
+          <Toaster richColors />
         </QueryClientProvider>
         <Scripts />
       </body>

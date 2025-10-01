@@ -8,12 +8,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Home, ArrowLeft } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/$404")({
   component: NotFoundPage,
 });
 
 function NotFoundPage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4">
       <Card className="w-full max-w-md text-center">

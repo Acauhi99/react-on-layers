@@ -37,10 +37,16 @@ export const useAuthStore = create<AuthState>()(
       },
 
       getUser: () => {
-        const { token } = get();
+        const { token, isAuthenticated } = get();
         if (!token || isTokenExpired(token)) {
-          get().logout();
+          if (isAuthenticated) {
+            set({ token: null, isAuthenticated: false });
+          }
           return null;
+        }
+
+        if (!isAuthenticated) {
+          set({ isAuthenticated: true });
         }
 
         const payload = decodeJWT(token);
@@ -61,15 +67,6 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "auth-storage",
       partialize: (state) => ({ token: state.token }),
-      onRehydrateStorage: () => (state) => {
-        if (state?.token) {
-          try {
-            state.login(state.token);
-          } catch {
-            state.logout();
-          }
-        }
-      },
     }
   )
 );
